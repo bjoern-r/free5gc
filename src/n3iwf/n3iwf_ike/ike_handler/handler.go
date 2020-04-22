@@ -995,6 +995,13 @@ func HandleIKEAUTH(ueSendInfo *n3iwf_message.UDPSendInfoGroup, message *ike_mess
 		// Send IKE message to UE
 		SendIKEMessageToUE(ueSendInfo, responseIKEMessage)
 
+		ikeLog.Infof("!!!!!!!! Wireshark: SPI: %x i2rE: %s i2rI: %s r2iE: %s r2iI: %s",
+			childSecurityAssociationContext.SPI,
+			hex.EncodeToString(childSecurityAssociationContext.InitiatorToResponderEncryptionKey),
+			hex.EncodeToString(childSecurityAssociationContext.InitiatorToResponderIntegrityKey),
+			hex.EncodeToString(childSecurityAssociationContext.ResponderToInitiatorEncryptionKey),
+			hex.EncodeToString(childSecurityAssociationContext.ResponderToInitiatorIntegrityKey))
+
 		// Aplly XFRM rules
 		if err = ApplyXFRMRule(false, childSecurityAssociationContext); err != nil {
 			ikeLog.Errorf("[IKE] Applying XFRM rules failed: %+v", err)

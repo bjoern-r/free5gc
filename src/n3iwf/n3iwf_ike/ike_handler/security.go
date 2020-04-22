@@ -389,6 +389,10 @@ func GenerateKeyForIKESA(ikeSecurityAssociation *n3iwf_context.IKESecurityAssoci
 	ikeLog.Tracef("SK_er:\n%s", hex.Dump(ikeSecurityAssociation.SK_er))
 	ikeLog.Tracef("SK_pi:\n%s", hex.Dump(ikeSecurityAssociation.SK_pi))
 	ikeLog.Tracef("SK_pr:\n%s", hex.Dump(ikeSecurityAssociation.SK_pr))
+	ikeLog.Infof("!!!!! Wireshark: %016x,%016x,%s,%s,\"AES-CBC-256 [RFC3602]\",%s,%s,\"HMAC_SHA1_96 [RFC2404]\"",
+		ikeSecurityAssociation.RemoteSPI, ikeSecurityAssociation.LocalSPI,
+		hex.EncodeToString(ikeSecurityAssociation.SK_ei), hex.EncodeToString(ikeSecurityAssociation.SK_er),
+		hex.EncodeToString(ikeSecurityAssociation.SK_ai), hex.EncodeToString(ikeSecurityAssociation.SK_ar))
 
 	return nil
 }
@@ -472,6 +476,13 @@ func GenerateKeyForChildSA(ikeSecurityAssociation *n3iwf_context.IKESecurityAsso
 	childSecurityAssociation.ResponderToInitiatorEncryptionKey = append(childSecurityAssociation.ResponderToInitiatorEncryptionKey, keyStream[:lengthEncryptionKeyIPSec]...)
 	keyStream = keyStream[lengthEncryptionKeyIPSec:]
 	childSecurityAssociation.ResponderToInitiatorIntegrityKey = append(childSecurityAssociation.ResponderToInitiatorIntegrityKey, keyStream[:lengthIntegrityKeyIPSec]...)
+
+	ikeLog.Infof("!!!!!!!! Wireshark: SPI: %x i2rE: %s i2rI: %s r2iE: %s r2iI: %s",
+		childSecurityAssociation.SPI,
+		hex.EncodeToString(childSecurityAssociation.InitiatorToResponderEncryptionKey),
+		hex.EncodeToString(childSecurityAssociation.InitiatorToResponderIntegrityKey),
+		hex.EncodeToString(childSecurityAssociation.ResponderToInitiatorEncryptionKey),
+		hex.EncodeToString(childSecurityAssociation.ResponderToInitiatorIntegrityKey))
 
 	return nil
 
